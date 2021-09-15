@@ -39,4 +39,5 @@ def get_messages(db: Session = Depends(get_db)):
 def send_message(data: schemas.MessageSend, db: Session = Depends(get_db)):
     assensment = 100
     message = crud.send_message(db, data.text, data.sender, assensment)
-    return {}
+    messages = crud.get_messages(db)
+    return messages
