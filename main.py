@@ -5,6 +5,7 @@ from fastapi.responses import FileResponse
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from starlette.responses import RedirectResponse
+from sentiment import getScore
 
 import models, schemas, crud
 from database import SessionLocal, engine
@@ -37,9 +38,12 @@ def get_messages(db: Session = Depends(get_db)):
 
 @app.post("/api/messages", response_model={})
 def send_message(data: schemas.MessageSend, db: Session = Depends(get_db)):
-    assensment = 100
-    if len(data.text) > 0:
-        message = crud.send_message(db, data.text, data.sender, assensment)
+    text = data.text
+
+    assensment = getScore(text)
+
+    if len(text) > 0:
+        message = crud.send_message(db, text, data.sender, assensment)
         
     messages = crud.get_messages(db)
     return messages
