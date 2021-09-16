@@ -38,6 +38,8 @@ def get_messages(db: Session = Depends(get_db)):
 @app.post("/api/messages", response_model={})
 def send_message(data: schemas.MessageSend, db: Session = Depends(get_db)):
     assensment = 100
-    message = crud.send_message(db, data.text, data.sender, assensment)
+    if len(data.text) > 0:
+        message = crud.send_message(db, data.text, data.sender, assensment)
+        
     messages = crud.get_messages(db)
     return messages
